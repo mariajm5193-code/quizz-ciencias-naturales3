@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ciencias Naturales - 6.º Primaria</title>
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --card-bg: #161f36;
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-gold: #ffb703;
+            --accent-orange: #fb8500;
+            --accent-pink: #ff477e;
+            --success: #2ec4b6;
+            --error: #e63946;
+            --text-light: #f8f9fa;
+            --text-muted: #a0aec0;
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --shadow-glow: 0 8px 32px 0 rgba(0, 242, 254, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(79, 172, 254, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(255, 71, 126, 0.1) 0%, transparent 40%);
+            color: var(--text-light);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 540px;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: rgba(22, 31, 54, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        @media (min-width: 541px) {
+            .app-container {
+                height: 92vh;
+                max-height: 880px;
+                border-radius: var(--radius-lg);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                overflow: hidden;
+            }
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Screen: Welcome */
+        .welcome-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .logo-badge {
+            width: 110px;
+            height: 110px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+            box-shadow: 0 12px 28px rgba(0, 242, 254, 0.3);
+            animation: pulseLogo 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-cyan);
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            width: 100%;
+            border-left: 4px solid var(--accent-gold);
+            text-align: left;
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* Screen: Quiz */
+        .quiz-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .top-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .score-display {
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .streak-badge {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .progress-bar-container {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .quiz-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .active-surprise-tag {
+            align-self: flex-start;
+            background: rgba(255, 183, 3, 0.15);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.45;
+            color: #fff;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            min-height: 60px;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .option-btn:not(:disabled):active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .option-key {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .option-btn.correct {
+            background: rgba(46, 196, 182, 0.2) !important;
+            border-color: var(--success) !important;
+            color: #fff;
+        }
+
+        .option-btn.correct .option-key {
+            background: var(--success);
+            color: #000;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(230, 57, 70, 0.2) !important;
+            border-color: var(--error) !important;
+            color: #fff;
+        }
+
+        .option-btn.incorrect .option-key {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .option-btn.hidden-5050 {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .feedback-panel {
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 8px;
+            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feedback-panel.correct {
+            background: rgba(46, 196, 182, 0.15);
+            border: 1px solid var(--success);
+        }
+
+        .feedback-panel.incorrect {
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px solid var(--error);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .feedback-panel.correct .feedback-header { color: var(--success); }
+        .feedback-panel.incorrect .feedback-header { color: var(--error); }
+
+        .explanation-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .joke-card {
+            background: rgba(255, 183, 3, 0.1);
+            border: 1px dashed var(--accent-gold);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .joke-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+
+        /* Screen: Results */
+        .results-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            text-align: center;
+            padding-bottom: 80px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.2) 0%, rgba(22, 31, 54, 0.8) 70%);
+            border: 4px solid var(--accent-cyan);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+        }
+
+        .score-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .motivation-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .motivation-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--accent-cyan);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-val {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stat-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Fixed Footer Button Container */
+        .bottom-action-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background: linear-gradient(to top, rgba(10, 15, 29, 0.95), rgba(10, 15, 29, 0.6) 70%, transparent);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+
+        .main-btn {
+            width: 100%;
+            height: 60px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #040914;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 10px rgba(0, 242, 254, 0.2);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 29, 0.85);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            z-index: 100;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .modal-icon {
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .modal-desc {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: var(--text-light);
+        }
+
+        /* Canvas Confetti */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- PANTALLA BIENVENIDA -->
+        <div id="screen-welcome" class="screen active">
+            <div class="welcome-content">
+                <div class="logo-badge">🌿</div>
+                <div>
+                    <h1 class="title">Ciencias Naturales</h1>
+                    <p class="subtitle">6.º de Primaria</p>
+                </div>
+
+                <div class="tags-container">
+                    <span class="tag">🌱 Plantas</span>
+                    <span class="tag">🦁 Animales</span>
+                    <span class="tag">🌊 Ecosistemas</span>
+                </div>
+
+                <div class="info-box">
+                    🎯 <strong>¿Preparado para el desafío?</strong><br>
+                    Responderás a 30 preguntas aleatorias sobre la naturaleza. ¡Mantén tu racha para multiplicar tus puntos y descubre sorpresas en el camino!
+                </div>
+            </div>
+
+            <div class="bottom-action-container">
+                <button class="main-btn" onclick="startGame()">🚀 Iniciar Desafío</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA JUEGO -->
+        <div id="screen-quiz" class="screen">
+            <div class="quiz-header">
+                <div class="top-stats">
+                    <span id="quiz-progress-text">Pregunta 1 de 30</span>
+                    <div class="score-display">⭐ <span id="quiz-score">0</span></div>
+                    <div id="quiz-streak-badge" class="streak-badge" style="display:none;">🔥 ×<span id="quiz-streak-val">1</span></div>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="quiz-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="quiz-body">
+                <div id="surprise-active-tag" class="active-surprise-tag" style="display: none;"></div>
+                <div id="question-text" class="question-card"></div>
+                <div id="options-container" class="options-grid"></div>
+                <div id="feedback-panel" class="feedback-panel" style="display: none;"></div>
+            </div>
+
+            <div class="bottom-action-container">
+                <button id="next-btn" class="main-btn" style="display: none;" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA FINAL -->
+        <div id="screen-results" class="screen">
+            <div class="results-body">
+                <div class="score-circle">
+                    <div id="res-score-percent" class="score-number">0%</div>
+                    <div class="score-label">Aciertos</div>
+                </div>
+
+                <div class="motivation-card">
+                    <div id="res-motivation-title" class="motivation-title">¡Gran trabajo!</div>
+                    <div id="res-motivation-desc" style="font-size: 0.95rem; color: var(--text-light);">Has completado el desafío de Ciencias Naturales.</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div id="res-stat-score" class="stat-val">0</div>
+                        <div class="stat-desc">Puntos Totales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="res-stat-correct" class="stat-val">0 / 30</div>
+                        <div class="stat-desc">Preguntas Correctas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="res-stat-streak" class="stat-val">0</div>
+                        <div class="stat-desc">Mejor Racha</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="res-stat-surprises" class="stat-val">0</div>
+                        <div class="stat-desc">Sorpresas Encontradas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-action-container">
+                <button class="main-btn" onclick="startGame()">🔄 Reintentar Desafío</button>
+            </div>
+        </div>
+
+        <!-- MODAL SORPRESAS -->
+        <div id="surprise-modal" class="modal-overlay">
+            <div class="modal-card">
+                <div id="modal-icon" class="modal-icon">🎁</div>
+                <div id="modal-title" class="modal-title">¡Sorpresa!</div>
+                <div id="modal-desc" class="modal-desc">Detalles del evento...</div>
+                <button class="main-btn" style="height: 50px; font-size: 1rem;" onclick="closeModal()">¡Vamos!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS DE PREGUNTAS ---
+        const rawQuestions = [
+            {
+                q: "¿Qué parte de la célula vegetal se encarga de realizar la fotosíntesis y le da el color verde a las plantas?",
+                options: ["El núcleo", "El cloroplasto", "La membrana", "La pared celular"],
+                correct: 1,
+                exp: "Los cloroplastos contienen la clorofila, un pigmento verde que atrapa la luz del sol para que la planta pueda fabricar su propio alimento."
+            },
+            {
+                q: "¿Cómo se llaman los seres vivos capaces de fabricar su propio alimento, como las plantas?",
+                options: ["Descomponedores", "Consumidores", "Productores", "Carnívoros"],
+                correct: 2,
+                exp: "Las plantas y las algas son seres productores porque producen su propio alimento utilizando la luz del sol, el agua y el aire."
+            },
+            {
+                q: "¿Por qué parte absorbe la planta el agua y las sales minerales del suelo?",
+                options: ["Por las hojas", "Por las flores", "Por la raíz", "Por el fruto"],
+                correct: 2,
+                exp: "La raíz fija la planta al suelo y absorbe el agua y los minerales necesarios para formar la savia bruta."
+            },
+            {
+                q: "¿Qué gas del aire necesitan las plantas para realizar la fotosíntesis?",
+                options: ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"],
+                correct: 1,
+                exp: "Durante la fotosíntesis, las plantas absorben dióxido de carbono del aire y, a cambio, liberan oxígeno, que es el gas que necesitamos para respirar."
+            },
+            {
+                q: "¿Cómo se llaman las plantas que tienen flores y protegen sus semillas dentro de un fruto?",
+                options: ["Musgos", "Helechos", "Gimnospermas", "Angiospermas"],
+                correct: 3,
+                exp: "Las angiospermas son las plantas con flores vistosas cuyo ovario se transforma en un fruto que guarda y protege las semillas en su interior."
+            },
+            {
+                q: "¿Qué proceso realizan tanto los animales como las plantas durante todo el día para obtener energía?",
+                options: ["Fotosíntesis", "Respiración", "Digestión", "Polinización"],
+                correct: 1,
+                exp: "Todos los seres vivos respiran de forma continua: toman oxígeno y expulsan dióxido de carbono para obtener la energía que necesitan para vivir."
+            },
+            {
+                q: "¿Cómo se llaman los animales que tienen un esqueleto interno con columna vertebral?",
+                options: ["Invertebrados", "Vertebrados", "Artrópodos", "Moluscos"],
+                correct: 1,
+                exp: "Los animales vertebrados se caracterizan por tener un esqueleto interno formado por huesos o cartílagos que incluye la columna vertebral."
+            },
+            {
+                q: "¿Qué grupo de animales vertebrados se distingue por tener el cuerpo cubierto de plumas y un pico sin dientes?",
+                options: ["Mamíferos", "Peces", "Aves", "Reptiles"],
+                correct: 2,
+                exp: "Las aves son el único grupo de animales que tiene plumas. Además, nacen de huevos y tienen alas para volar."
+            },
+            {
+                q: "¿Cuál de los siguientes animales es un invertebrado?",
+                options: ["Un perro", "Una mariposa", "Una águila", "Una rana"],
+                correct: 1,
+                exp: "La mariposa es un insecto y no tiene columna vertebral ni esqueleto interno de huesos, por lo que pertenece al grupo de los invertebrados."
+            },
+            {
+                q: "¿Cómo se llama la relación entre dos seres vivos donde ambos salen beneficiados, como las abejas y las flores?",
+                options: ["Parasitismo", "Mutualismo", "Competencia", "Depredación"],
+                correct: 1,
+                exp: "En el mutualismo ambos organismos ayudan y obtienen ventajas: la abeja consigue alimento (néctar) y la flor consigue repartir su polen."
+            },
+            {
+                q: "¿Cómo se llama el conjunto formado por un lugar, los seres vivos que habitan en él y las relaciones entre ellos?",
+                options: ["Ecosistema", "Población", "Especie", "Rebaño"],
+                correct: 0,
+                exp: "Un ecosistema incluye el medio físico (agua, aire, rocas), los seres vivos (plantas, animales) y la forma en que se relacionan entre sí."
+            },
+            {
+                q: "¿Cuál de los siguientes elementos es un componente abiótico (sin vida) de un ecosistema?",
+                options: ["Los árboles", "Las bacterias", "La luz del sol", "Los insectos"],
+                correct: 2,
+                exp: "La luz, la temperatura, el agua y las rocas son factores abióticos porque forman el entorno físico pero no son seres vivos."
+            },
+            {
+                q: "¿Qué es el hábitat de un animal?",
+                options: ["La comida que más le gusta", "El lugar físico donde vive y encuentra lo necesario para sobrevivir", "Los enemigos de los que debe huir", "La estación del año en la que nace"],
+                correct: 1,
+                exp: "El hábitat es la \"casa\" de un organismo, es decir, el espacio que reúne las condiciones que necesita para alimentarse, protegerse y reproducirse."
+            },
+            {
+                q: "¿Cómo se llama la nutrición de los animales que necesitan comer a otros seres vivos para alimentarse?",
+                options: ["Autótrofa", "Heterótrofa", "Vegetal", "Mineral"],
+                correct: 1,
+                exp: "Los animales tienen nutrición heterótrofa porque no pueden fabricar su propio alimento y deben consumir a otros seres vivos."
+            },
+            {
+                q: "¿Qué líquido transporta el agua y las sales minerales desde la raíz hasta las hojas de una planta?",
+                options: ["La savia elaborada", "La savia bruta", "El polen", "El néctar"],
+                correct: 1,
+                exp: "La savia bruta es la mezcla de agua y minerales absorbida por las raíces. Viaja por el tallo hasta las hojas para convertirse en savia elaborada."
+            },
+            {
+                q: "¿Qué nombre recibe el cambio drástico que sufren las ranas o las mariposas desde que nacen hasta hacerse adultas?",
+                options: ["Crecimiento", "Metamorfosis", "Germinación", "Hibernación"],
+                correct: 1,
+                exp: "La metamorfosis es la transformación que experimentan algunos animales, pasando por etapas como renacuajo o larva hasta llegar a la forma adulta."
+            },
+            {
+                q: "¿Qué tipo de organismo está siempre al principio de una cadena alimentaria?",
+                options: ["Un carnívoro", "Un herbívoro", "Una planta o productor", "Un hongo"],
+                correct: 2,
+                exp: "Todas las cadenas alimentarias empiezan con un ser productor (como una planta), ya que es el único capaz de captar la energía del sol para generar alimento."
+            },
+            {
+                q: "¿Cuál es la principal característica que distingue a los mamíferos de otros animales?",
+                options: ["Que ponen huevos", "Que las madres producen leche para alimentar a sus crías", "Que pueden volar", "Que viven dentro del agua"],
+                correct: 1,
+                exp: "Las hembras de los mamíferos tienen glándulas mamarias con las que alimentan a sus crías recién nacidas mediante la leche materna."
+            },
+            {
+                q: "¿Por qué orificios diminutos de las hojas entra el dióxido de carbono y sale el oxígeno?",
+                options: ["Estomas", "Raíces", "Espinas", "Vena central"],
+                correct: 0,
+                exp: "Los estomas son pequeños poros microscópicos presentes en las hojas que se abren y cierran para permitir la entrada y salida de gases y agua."
+            },
+            {
+                q: "¿Qué ocurriría en un bosque si desaparecieran de repente todos los carnívoros?",
+                options: ["Las plantas crecerían más rápido y sin problemas", "Aumentaría mucho el número de herbívoros y podrían agotar las plantas", "Los herbívoros se convertirían en carnívoros", "No pasaría nada en el ecosistema"],
+                correct: 1,
+                exp: "Sin depredadores carnívoros que los controlen, los animales herbívoros se multiplicarían demasiado rápido y comerían más vegetación de la que el bosque puede reponer."
+            },
+            {
+                q: "¿Qué se forma cuando el polen de una flor llega al pistilo de otra y fecunda su óvulo?",
+                options: ["Una hoja nueva", "Una raíz", "Una semilla", "Un tallo"],
+                correct: 2,
+                exp: "La unión del polen con el óvulo produce la semilla, la cual, al germinar en condiciones adecuadas, dará lugar a una nueva planta."
+            },
+            {
+                q: "¿Qué tipo de vertebrados nacen en el agua respirando por branquias y de adultos viven en la tierra respirando por pulmones y piel?",
+                options: ["Reptiles", "Anfibios", "Mamíferos", "Aves"],
+                correct: 1,
+                exp: "Los anfibios (como las ranas o sapos) nacen en el agua como renacuajos y, tras la metamorfosis, se convierten en adultos adaptados a la vida terrestre."
+            },
+            {
+                q: "¿Cómo se llama la relación donde un ser vivo (como un piojo o una pulga) vive a costa de otro haciéndole daño?",
+                options: ["Parasitismo", "Mutualismo", "Comensalismo", "Cooperación"],
+                correct: 0,
+                exp: "El parásito se beneficia alimentándose a expensas de otro ser vivo (el hospedador), al cual perjudica o causa enfermedades."
+            },
+            {
+                q: "¿Qué le da el color verde a las plantas y permite captar la luz del sol?",
+                options: ["El agua", "La clorofila", "El nitrógeno", "El oxígeno"],
+                correct: 1,
+                exp: "La clorofila es el sustancia verde que se encuentra dentro de los cloroplastos y es fundamental para atrapar la luz solar necesaria en la fotosíntesis."
+            },
+            {
+                q: "¿Cuál de los siguientes lugares es un ejemplo de ecosistema de agua dulce?",
+                options: ["Un océano", "Un arrecife de coral", "Un río", "El mar Mediterráneo"],
+                correct: 2,
+                exp: "Los ríos, lagos y lagunas contienen agua dulce. Los mares y océanos contienen agua salada."
+            },
+            {
+                q: "¿Cómo se llaman los animales que no pueden controlar su propia temperatura corporal y necesitan el calor del sol para calentarse?",
+                options: ["Animales de sangre caliente", "Animales de sangre fría (ectotermos)", "Mamíferos", "Aves"],
+                correct: 1,
+                exp: "Reptiles, anfibios y peces son de \"sangre fría\" porque la temperatura de su cuerpo depende de la temperatura del ambiente."
+            },
+            {
+                q: "¿Cómo se llaman los animales que se alimentan únicamente de plantas?",
+                options: ["Carnívoros", "Herbívoros", "Omnívoros", "Carroñeros"],
+                correct: 1,
+                exp: "Los herbívoros (como las conejos, las vacas o las jirafas) se alimentan exclusivamente de hojas, frutos, tallos o raíces."
+            },
+            {
+                q: "¿Qué seres vivos ayudan a descomponer las hojas secas y los restos de animales muertos convirtiéndolos en abono para el suelo?",
+                options: ["Las águilas y los leones", "Los hongos y las bacterias", "Las flores y los árboles", "Los peces y las ranas"],
+                correct: 1,
+                exp: "Los hongos y las bacterias actúan como descomponedores, limpiando el medio ambiente y dejando minerales en el suelo que las plantas usan para crecer."
+            },
+            {
+                q: "¿Qué adaptación ayuda a un camello a sobrevivir en el clima caluroso y seco del desierto?",
+                options: ["Tener plumas impermeables", "Poder estar mucho tiempo sin beber agua y acumular grasa en su joroba", "Tener una piel fina y húmeda", "Respirar bajo el agua"],
+                correct: 1,
+                exp: "Los camellos están adaptados al desierto guardando reservas energéticas en sus jorobas y reduciendo la pérdida de agua al mínimo."
+            },
+            {
+                q: "¿Qué representa una cadena trófica o alimentaria?",
+                options: ["La lista de todos los animales que viven en un zoo", "El recorrido que hace la energía y el alimento desde un ser vivo a otro", "El camino que siguen los animales cuando migran en invierno", "El número de crías que tiene un mamífero"],
+                correct: 1,
+                exp: "Una cadena alimentaria muestra \"quién se come a quién\" en la naturaleza mediante una línea sencilla que une a los distintos seres vivos."
+            }
+        ];
+
+        // --- CHISTES PARA PAUSAS ---
+        const jokes = [
+            "¿Qué le dice un árbol a otro? ¡Qué vida tan hojaseada!",
+            "¿Qué hace una abeja en el gimnasio? ¡Zum-ba!",
+            "¿Qué le dice un pez a otro pez? ¡Nada!",
+            "¿Por qué los pájaros no usan teléfono? ¡Porque ya tienen picos!",
+            "¿Qué le dice una iguana a su hermana gemela? Somos iguanitas.",
+            "¿Qué hace un perro con una herramienta? ¡Ladrando!",
+            "¿Cuál es el colmo de un botánico? Tener un hijo llamado Germán y que le guste la planta baja.",
+            "¿Qué le dice la oca a la otra oca? ¡Aca-bemos de jugar!",
+            "¿Por qué las plantas son tan buenas en mates? ¡Porque tienen muchas raíces!",
+            "¿Qué le dice un gusano a otro? Me voy a dar una vuelta a la manzana."
+        ];
+
+        const positiveQuotes = [
+            "¡Impresionante dominación de la naturaleza!",
+            "¡Tu cerebro brilla como la fotosíntesis!",
+            "¡Conocimiento de nivel experto!",
+            "¡Excelente respuesta!",
+            "¡Sigue así, vas directo al éxito!"
+        ];
+
+        // --- ESTADO DEL JUEGO ---
+        let gameQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let correctAnswersCount = 0;
+        let surprisesFound = 0;
+        let activePreSurprise = null; // 'DOUBLE', '5050', 'SHIELD'
+        let lastSurpriseIndex = -10;
+        let unusedJokes = [...jokes];
+        let isAnswered = false;
+
+        // --- UTILIDADES ---
+        function shuffle(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML.replace(/\*(.*?)\*/g, '<i>$1</i>');
+        }
+
+        function getMultiplier(strk) {
+            if (strk <= 1) return 1;
+            if (strk === 2) return 1.5;
+            if (strk === 3) return 2;
+            if (strk === 4) return 2.5;
+            return 3;
+        }
+
+        // --- FLUJO DEL JUEGO ---
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            correctAnswersCount = 0;
+            surprisesFound = 0;
+            currentIndex = 0;
+            lastSurpriseIndex = -10;
+            unusedJokes = [...jokes];
+
+            // Mezclar preguntas y sus opciones
+            gameQuestions = shuffle(rawQuestions).map(q => {
+                const originalCorrectText = q.options[q.correct];
+                const shuffledOpts = shuffle(q.options);
+                const newCorrectIndex = shuffledOpts.indexOf(originalCorrectText);
+                return {
+                    q: q.q,
+                    options: shuffledOpts,
+                    correct: newCorrectIndex,
+                    exp: q.exp
+                };
+            });
+
+            showScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            activePreSurprise = null;
+            document.getElementById('feedback-panel').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('surprise-active-tag').style.display = 'none';
+
+            const qData = gameQuestions[currentIndex];
+
+            // Evaluar sorpresa pre-pregunta
+            // Reglas: ~25% probabilidad, no en las 2 primeras, no consecutivas, máx 1 por cada 5 preguntas
+            const isEligible = currentIndex >= 2 && (currentIndex - lastSurpriseIndex >= 2);
+            if (isEligible && Math.random() < 0.25) {
+                const r = Math.random();
+                if (r < 0.35) activePreSurprise = 'DOUBLE';
+                else if (r < 0.70) activePreSurprise = '5050';
+                else activePreSurprise = 'SHIELD';
+                
+                lastSurpriseIndex = currentIndex;
+                surprisesFound++;
+                triggerPreSurpriseModal(activePreSurprise);
+                return;
+            }
+
+            renderCurrentQuestion();
+        }
+
+        function renderCurrentQuestion() {
+            const qData = gameQuestions[currentIndex];
+
+            // UI Progress & Score
+            document.getElementById('quiz-progress-text').innerText = `Pregunta ${currentIndex + 1} de ${gameQuestions.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentIndex + 1) / gameQuestions.length) * 100}%`;
+            document.getElementById('quiz-score').innerText = Math.round(score);
+
+            // Streak UI
+            const streakBadge = document.getElementById('quiz-streak-badge');
+            if (streak > 1) {
+                streakBadge.style.display = 'flex';
+                document.getElementById('quiz-streak-val').innerText = getMultiplier(streak);
+            } else {
+                streakBadge.style.display = 'none';
+            }
+
+            // Active Surprise Tag UI
+            const tagEl = document.getElementById('surprise-active-tag');
+            if (activePreSurprise === 'DOUBLE') {
+                tagEl.innerHTML = '⚡ ¡PUNTOS DOBLES ACTIVADOS!';
+                tagEl.style.display = 'flex';
+            } else if (activePreSurprise === '5050') {
+                tagEl.innerHTML = '🎁 ¡COMODÍN 50/50 APLICADO!';
+                tagEl.style.display = 'flex';
+            } else if (activePreSurprise === 'SHIELD') {
+                tagEl.innerHTML = '🛡️ ¡ESCUDO DE RACHA ACTIVO!';
+                tagEl.style.display = 'flex';
+            }
+
+            // Question Text
+            document.getElementById('question-text').innerHTML = escapeHTML(qData.q);
+
+            // Options Grid
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const keys = ['A', 'B', 'C', 'D'];
+
+            // Si hay comodín 50/50, elegir 2 opciones incorrectas para ocultar
+            let hiddenIndices = [];
+            if (activePreSurprise === '5050') {
+                let incorrects = [];
+                for (let i = 0; i < qData.options.length; i++) {
+                    if (i !== qData.correct) incorrects.push(i);
+                }
+                incorrects = shuffle(incorrects);
+                hiddenIndices = incorrects.slice(0, 2);
+            }
+
+            qData.options.forEach((optIndexText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                if (hiddenIndices.includes(idx)) {
+                    btn.classList.add('hidden-5050');
+                }
+                btn.onclick = () => selectOption(idx);
+                btn.innerHTML = `
+                    <div class="option-key">${keys[idx]}</div>
+                    <div style="flex: 1;">${escapeHTML(optIndexText)}</div>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function triggerPreSurpriseModal(type) {
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+
+            if (type === 'DOUBLE') {
+                icon.innerText = '⚡';
+                title.innerText = '¡Pregunta Doble!';
+                desc.innerText = '¡Los puntos que ganes en esta pregunta valdrán el doble! Demuestra lo que sabes.';
+            } else if (type === '5050') {
+                icon.innerText = '🎁';
+                title.innerText = '¡Comodín 50/50!';
+                desc.innerText = '¡Te regalamos una pista! Se eliminan dos opciones incorrectas de la pantalla.';
+            } else if (type === 'SHIELD') {
+                icon.innerText = '🛡️';
+                title.innerText = '¡Escudo de Racha!';
+                desc.innerText = '¡Protección activada! Si fallas esta pregunta, tu racha no se romperá.';
+            }
+
+            document.getElementById('surprise-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('surprise-modal').classList.remove('active');
+            renderCurrentQuestion();
+        }
+
+        function selectOption(selectedIndex) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const qData = gameQuestions[currentIndex];
+            const isCorrect = selectedIndex === qData.correct;
+            const buttons = document.querySelectorAll('.option-btn');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            const feedbackPanel = document.getElementById('feedback-panel');
+            feedbackPanel.style.display = 'flex';
+
+            let pointsGained = 0;
+
+            if (isCorrect) {
+                correctAnswersCount++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+
+                const mult = getMultiplier(streak);
+                let basePoints = 100 * mult;
+                if (activePreSurprise === 'DOUBLE') basePoints *= 2;
+
+                pointsGained = Math.round(basePoints);
+                score += pointsGained;
+                document.getElementById('quiz-score').innerText = Math.round(score);
+
+                buttons[selectedIndex].classList.add('correct');
+
+                const randomQuote = positiveQuotes[Math.floor(Math.random() * positiveQuotes.length)];
+                
+                feedbackPanel.className = 'feedback-panel correct';
+                feedbackPanel.innerHTML = `
+                    <div class="feedback-header">
+                        <span>¡Correcto! +${pointsGained} pts</span>
+                        <span>✨</span>
+                    </div>
+                    <div style="font-size: 0.95rem; font-weight: 600;">${randomQuote}</div>
+                    <div class="explanation-box">
+                        <div class="explanation-title">Explicación didáctica:</div>
+                        ${escapeHTML(qData.exp)}
+                    </div>
+                `;
+
+                // Evaluar Sorpresa Post-Acierto (Cofre ~18% o Humor ~17%)
+                const postRand = Math.random();
+                if (postRand < 0.18) {
+                    surprisesFound++;
+                    const extraPts = [50, 100, 150, 200][Math.floor(Math.random() * 4)];
+                    score += extraPts;
+                    document.getElementById('quiz-score').innerText = Math.round(score);
+                    triggerConfetti();
+                    
+                    const chestBox = document.createElement('div');
+                    chestBox.className = 'joke-card';
+                    chestBox.style.borderColor = 'var(--accent-cyan)';
+                    chestBox.style.color = 'var(--accent-cyan)';
+                    chestBox.innerHTML = `
+                        <div class="joke-icon">🎁</div>
+                        <div><strong>¡Cofre Sorpresa Abierto!</strong> Has encontrado +${extraPts} puntos extra.</div>
+                    `;
+                    feedbackPanel.appendChild(chestBox);
+                } else if (postRand < 0.35) {
+                    appendJoke(feedbackPanel);
+                }
+
+            } else {
+                if (activePreSurprise === 'SHIELD') {
+                    // Mantiene la racha por el escudo
+                } else {
+                    streak = 0;
+                }
+
+                buttons[selectedIndex].classList.add('incorrect');
+                buttons[qData.correct].classList.add('correct');
+
+                feedbackPanel.className = 'feedback-panel incorrect';
+                feedbackPanel.innerHTML = `
+                    <div class="feedback-header">
+                        <span>¡Respuesta Incorrecta!</span>
+                        <span>❌</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">La opción correcta era: <strong>${escapeHTML(qData.options[qData.correct])}</strong></div>
+                    <div class="explanation-box">
+                        <div class="explanation-title">Explicación didáctica:</div>
+                        ${escapeHTML(qData.exp)}
+                    </div>
+                `;
+
+                // Evaluar Pausa de Humor tras fallo (~40%)
+                if (Math.random() < 0.40) {
+                    appendJoke(feedbackPanel);
+                }
+            }
+
+            const nextBtn = document.getElementById('next-btn');
+            if (currentIndex === gameQuestions.length - 1) {
+                nextBtn.innerText = 'Ver Resultados 🏆';
+            } else {
+                nextBtn.innerText = 'Siguiente Pregunta ➔';
+            }
+            nextBtn.style.display = 'flex';
+        }
+
+        function appendJoke(container) {
+            if (unusedJokes.length === 0) unusedJokes = [...jokes];
+            const jokeIdx = Math.floor(Math.random() * unusedJokes.length);
+            const jokeText = unusedJokes.splice(jokeIdx, 1)[0];
+            surprisesFound++;
+
+            const jokeBox = document.createElement('div');
+            jokeBox.className = 'joke-card';
+            jokeBox.innerHTML = `
+                <div class="joke-icon">😂</div>
+                <div><strong>Pausa de risas:</strong> ${escapeHTML(jokeText)}</div>
+            `;
+            container.appendChild(jokeBox);
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < gameQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('screen-results');
+
+            const percent = Math.round((correctAnswersCount / gameQuestions.length) * 100);
+            document.getElementById('res-score-percent').innerText = `${percent}%`;
+            document.getElementById('res-stat-score').innerText = Math.round(score);
+            document.getElementById('res-stat-correct').innerText = `${correctAnswersCount} / ${gameQuestions.length}`;
+            document.getElementById('res-stat-streak').innerText = `${maxStreak} seguidas`;
+            document.getElementById('res-stat-surprises').innerText = surprisesFound;
+
+            const motTitle = document.getElementById('res-motivation-title');
+            const motDesc = document.getElementById('res-motivation-desc');
+
+            if (percent >= 90) {
+                motTitle.innerText = '🏆 ¡Maestro de la Naturaleza!';
+                motDesc.innerText = '¡Increíble! Dominas perfectamente las plantas, los animales y los ecosistemas.';
+                triggerConfetti();
+            } else if (percent >= 75) {
+                motTitle.innerText = '🌟 ¡Excelente Trabajo!';
+                motDesc.innerText = 'Tienes un gran conocimiento sobre las ciencias naturales. ¡Sigue así!';
+                triggerConfetti();
+            } else if (percent >= 60) {
+                motTitle.innerText = '👍 ¡Buen Cómputo!';
+                motDesc.innerText = 'Has superado el desafío con buena nota. Con un poco más de repaso serás imparable.';
+            } else if (percent >= 50) {
+                motTitle.innerText = '📘 ¡Aprobado!';
+                motDesc.innerText = 'Has alcanzado el mínimo. Revisa las explicaciones didácticas para mejorar tu racha.';
+            } else {
+                motTitle.innerText = '🌱 ¡Sigue Entrenando!';
+                motDesc.innerText = 'La naturaleza tiene muchos secretos. ¡Vuelve a intentarlo para superarte!';
+            }
+        }
+
+        // --- TECLADO ---
+        document.addEventListener('keydown', (e) => {
+            const activeScreen = document.querySelector('.screen.active').id;
+            const modalActive = document.getElementById('surprise-modal').classList.contains('active');
+
+            if (modalActive) {
+                if (e.key === 'Enter') closeModal();
+                return;
+            }
+
+            if (activeScreen === 'screen-quiz') {
+                if (!isAnswered) {
+                    const keyMap = { 'a': 0, 'A': 0, 'b': 1, 'B': 1, 'c': 2, 'C': 2, 'd': 3, 'D': 3 };
+                    if (e.key in keyMap) {
+                        const btns = document.querySelectorAll('.option-btn');
+                        const idx = keyMap[e.key];
+                        if (btns[idx] && !btns[idx].disabled && !btns[idx].classList.contains('hidden-5050')) {
+                            selectOption(idx);
+                        }
+                    }
+                } else {
+                    if (e.key === 'Enter') {
+                        nextQuestion();
+                    }
+                }
+            } else if (activeScreen === 'screen-welcome' || activeScreen === 'screen-results') {
+                if (e.key === 'Enter') startGame();
+            }
+        });
+
+        // --- EFECTO CONFETI (CANVAS NATIVO) ---
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            const particles = [];
+            const colors = ['#00f2fe', '#4facfe', '#ffb703', '#fb8500', '#ff477e', '#2ec4b6'];
+
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.7) * 12,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    radius: Math.random() * 6 + 4,
+                    alpha: 1,
+                    decay: Math.random() * 0.02 + 0.015
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    if (p.alpha > 0) {
+                        alive = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.2; // gravedad
+                        p.alpha -= p.decay;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = Math.max(0, p.alpha);
+                        ctx.fill();
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            animate();
+        }
+    </script>
+</body>
+</html>
